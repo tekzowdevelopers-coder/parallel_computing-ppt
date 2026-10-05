@@ -2,12 +2,11 @@ import { createContext, useContext, useState, useCallback, useEffect } from 'rea
 
 const PresentationContext = createContext(null);
 
-export function PresentationProvider({ slides, children }) {
+export function PresentationProvider({ slides, moduleName = 'DAY 1 — OPENMP', onExitToMenu, children }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isPresenterMode, setIsPresenterMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isStarted, setIsStarted] = useState(false);
 
   const totalSlides = slides.length;
 
@@ -47,15 +46,10 @@ export function PresentationProvider({ slides, children }) {
 
   const toggleFullscreen = useCallback(() => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true));
+      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
     } else {
-      document.exitFullscreen().then(() => setIsFullscreen(false));
+      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
     }
-  }, []);
-
-  const startWorkshop = useCallback(() => {
-    setIsStarted(true);
-    setCurrentSlide(0);
   }, []);
 
   // Listen for fullscreen changes
@@ -71,8 +65,9 @@ export function PresentationProvider({ slides, children }) {
     direction,
     isPresenterMode,
     isFullscreen,
-    isStarted,
     slides,
+    moduleName,
+    onExitToMenu,
     goTo,
     goNext,
     goPrev,
@@ -80,7 +75,6 @@ export function PresentationProvider({ slides, children }) {
     goLast,
     togglePresenter,
     toggleFullscreen,
-    startWorkshop,
     currentSlideData: slides[currentSlide] || null,
   };
 

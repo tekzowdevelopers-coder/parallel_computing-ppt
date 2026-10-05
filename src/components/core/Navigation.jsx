@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import { usePresentation } from '../../hooks/usePresentation';
 
 export default function Navigation({ visible }) {
-  const { currentSlide, totalSlides, goNext, goPrev } = usePresentation();
+  const { currentSlide, totalSlides, goNext, goPrev, moduleName, onExitToMenu, currentSlideData } = usePresentation();
 
   const progress = totalSlides > 1 ? (currentSlide / (totalSlides - 1)) * 100 : 0;
 
@@ -18,11 +18,28 @@ export default function Navigation({ visible }) {
       transition={{ duration: 0.3 }}
     >
       <div className="flex items-center justify-between max-w-7xl mx-auto">
-        {/* Section label */}
-        <div className="flex-1">
-          <span className="text-xs font-mono tracking-[0.2em] text-slate-500 uppercase">
-            DAY 1 — OPENMP
+        {/* Module & Section label with Home button */}
+        <div className="flex-1 flex items-center gap-3">
+          {onExitToMenu && (
+            <button
+              onClick={onExitToMenu}
+              title="Return to Workshop Menu"
+              className="p-1.5 rounded-lg text-slate-500 hover:text-cyan-400 hover:bg-white/5 transition-all"
+            >
+              <Home size={16} />
+            </button>
+          )}
+          <span className="text-xs font-mono tracking-[0.2em] text-cyan-400/80 uppercase font-semibold">
+            {moduleName}
           </span>
+          {currentSlideData?.section && (
+            <>
+              <span className="text-slate-600 font-mono text-xs">•</span>
+              <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+                {currentSlideData.section}
+              </span>
+            </>
+          )}
         </div>
 
         {/* Navigation buttons & counter */}
@@ -35,7 +52,7 @@ export default function Navigation({ visible }) {
             <ChevronLeft size={20} />
           </button>
 
-          <span className="text-sm font-mono text-slate-400 min-w-[80px] text-center">
+          <span className="text-sm font-mono text-slate-300 min-w-[80px] text-center font-medium">
             {currentSlide + 1} / {totalSlides}
           </span>
 
@@ -50,7 +67,7 @@ export default function Navigation({ visible }) {
 
         {/* Progress bar */}
         <div className="flex-1 flex justify-end">
-          <div className="w-48 h-1 bg-white/5 rounded-full overflow-hidden">
+          <div className="w-48 h-1.5 bg-white/10 rounded-full overflow-hidden">
             <motion.div
               className="h-full rounded-full"
               style={{ background: 'linear-gradient(90deg, #06b6d4, #22d3ee)' }}
